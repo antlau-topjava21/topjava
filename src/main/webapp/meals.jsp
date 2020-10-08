@@ -16,25 +16,19 @@
         <th>Date</th>
         <th>Description</th>
         <th>Calories</th>
+        <th></th>
+        <th></th>
     </tr>
         <c:forEach var="meal" items="${mealsTo}">
-            <c:choose>
-                <c:when test="${meal.excess == true}">
-                    <tr style="color: red">
-                        <td><javatime:format value="${meal.dateTime}" pattern="dd-MM-yyyy hh:mm:ss"/></td>
-                        <td>${meal.description}</td>
-                        <td>${meal.calories}</td>
-                    </tr>
-                </c:when>
-                <c:otherwise>
-                    <tr style="color: green">
-                        <td><javatime:format value="${meal.dateTime}" pattern="dd-MM-yyyy hh:mm:ss"/></td>
-                        <td>${meal.description}</td>
-                        <td>${meal.calories}</td>
-                    </tr>
-                </c:otherwise>
-            </c:choose>
+            <tr style="color: ${meal.excess ? 'red' : 'green'}">
+                <td><javatime:format value="${meal.dateTime}" pattern="dd-MM-yyyy hh:mm:ss"/></td>
+                <td>${meal.description}</td>
+                <td>${meal.calories}</td>
+                <td><a href="meals?action=edit&id=<c:out value="${meal.id}"/>">Update</a></td>
+                <td><a href="meals?action=delete&id=<c:out value="${meal.id}"/>">Delete</a></td>
+            </tr>
         </c:forEach>
 </table>
+<p><a href="meals?action=insert">Add User</a></p>
 </body>
 </html>
