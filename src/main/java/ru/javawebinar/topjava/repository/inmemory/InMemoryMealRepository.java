@@ -73,6 +73,8 @@ public class InMemoryMealRepository implements MealRepository {
         if (repository == null) {
             return null;
         }
+//                return repository.values().stream()
+//                .sorted((meal1, meal2) -> meal2.getDateTime().compareTo(meal1.getDateTime())).collect(Collectors.toList());
         return repository.values().stream()
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed()).collect(Collectors.toList());
     }
