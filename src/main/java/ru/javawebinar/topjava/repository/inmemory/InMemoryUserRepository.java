@@ -20,8 +20,9 @@ public class InMemoryUserRepository implements UserRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
 
     {
-        log.info("user {}", 1);
-        save(new User(1, "user", "user@mail.ru", "password", Role.USER));
+        User demoUser = new User(counter.incrementAndGet(), "user", "user@mail.ru", "password", Role.USER);
+        log.info("demoUser {}", demoUser);
+        save(demoUser);
     }
 
     @Override
