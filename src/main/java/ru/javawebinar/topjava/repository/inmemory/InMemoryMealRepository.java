@@ -5,11 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,9 +21,9 @@ public class InMemoryMealRepository implements MealRepository {
     private final Map<Integer, Map<Integer, Meal>> generalRepository = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
     private static final Logger log = LoggerFactory.getLogger(InMemoryMealRepository.class);
-    private final int demoUserId = 1;
 
     {
+        int demoUserId = 1;
         meals.forEach(meal -> save(demoUserId, meal));
         log.info("initiate demoUser with meals {}", meals);
     }
@@ -47,34 +46,35 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public boolean delete(int userId, int id) {
         log.info("delete {}", id);
-        Map<Integer, Meal> repository = generalRepository.getOrDefault(userId, null);
+        Map<Integer, Meal> repository = generalRepository.get(userId);
         if (repository == null) {
             return false;
         }
-        boolean result = repository.remove(id) != null;
-        generalRepository.put(userId, repository);
-        return result;
+        return repository.remove(id) != null;
     }
 
     @Override
     public Meal get(int userId, int id) {
         log.info("get {}", id);
-        Map<Integer, Meal> repository = generalRepository.getOrDefault(userId, null);
+        Map<Integer, Meal> repository = generalRepository.get(userId);
         if (repository == null) {
             return null;
         }
-        return repository.getOrDefault(id, null);
+        return repository.get(id);
     }
 
     @Override
-    public Collection<Meal> getAll(int userId) {
+    public List<Meal> getAll(int userId) {
         log.info("getAll meal from user {}", userId);
-        Map<Integer, Meal> repository = generalRepository.getOrDefault(userId, null);
+        Map<Integer, Meal> repository = generalRepository.get(userId);
         if (repository == null) {
             return null;
         }
-        return repository.values().stream()
-                .sorted(Comparator.comparing(Meal::getDateTime).reversed()).collect(Collectors.toList());
+        return repository.values()
+                .stream()
+                .sorted(Comparator.comparing(Meal::getDateTime)
+                        .reversed())
+                .collect(Collectors.toList());
     }
 }
 

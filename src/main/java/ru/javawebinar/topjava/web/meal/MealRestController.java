@@ -9,7 +9,7 @@ import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
-import java.util.Collection;
+import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
@@ -25,21 +25,20 @@ public class MealRestController {
         this.service = service;
     }
 
-    public Collection<MealTo> getAll() {
+    public List<MealTo> getAll() {
         log.info("getAll meal of user {}", authUserId());
         return MealsUtil.getTos(service.getAll(authUserId()), SecurityUtil.authUserCaloriesPerDay());
     }
 
-    public MealTo get(int id) {
+    public Meal get(int id) {
         log.info("get {} from user {}", id, authUserId());
-        return getAll().stream().filter(mealTo -> mealTo.getId() == id).findAny().orElse(null);
+        return service.get(authUserId(), id);
     }
 
-    public MealTo create(Meal meal) {
+    public Meal create(Meal meal) {
         log.info("create {} to user {}", meal, authUserId());
         checkNew(meal);
-        service.create(authUserId(), meal);
-        return getAll().stream().filter(mealTo -> mealTo.getId().equals(meal.getId())).findAny().orElse(null);
+        return service.create(authUserId(), meal);
     }
 
     public void delete(int id) {
@@ -47,10 +46,9 @@ public class MealRestController {
         service.delete(authUserId(), id);
     }
 
-    public MealTo update(Meal meal, int id) {
+    public boolean update(Meal meal, int id) {
         log.info("update {} to user {}", meal, authUserId());
         assureIdConsistent(meal, id);
-        service.update(authUserId(), meal);
-        return getAll().stream().filter(mealTo -> mealTo.getId().equals(meal.getId())).findAny().orElse(null);
+        return service.update(authUserId(), meal);
     }
 }

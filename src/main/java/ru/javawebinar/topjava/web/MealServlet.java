@@ -17,8 +17,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-import static ru.javawebinar.topjava.util.MealsUtil.getMealFromMealTo;
-
 public class MealServlet extends HttpServlet {
     private ConfigurableApplicationContext appCtx;
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
@@ -66,7 +64,7 @@ public class MealServlet extends HttpServlet {
             case "update":
                 final Meal meal = "create".equals(action) ?
                         new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
-                        getMealFromMealTo(mealRestController.get(getId(request)));
+                        mealRestController.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
@@ -86,7 +84,7 @@ public class MealServlet extends HttpServlet {
 
     @Override
     public void destroy() {
-        super.destroy();
         appCtx.close();
+        super.destroy();
     }
 }
