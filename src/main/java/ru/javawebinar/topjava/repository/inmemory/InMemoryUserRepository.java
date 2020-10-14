@@ -22,8 +22,6 @@ public class InMemoryUserRepository implements UserRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
 
-    public InMemoryUserRepository() {}
-
     {
         User demoUser = new User(null, "user", "user@mail.ru", "password", Role.USER);
         log.info("demoUser {}", demoUser);
@@ -44,7 +42,7 @@ public class InMemoryUserRepository implements UserRepository {
             repository.put(user.getId(), user);
             return user;
         } else if (repository.get(user.getId()) == null) {
-            throw new NotFoundException("No user found with id = " + user.getId());
+            return null;
         }
         repository.put(user.getId(), user);
         return user;
@@ -59,7 +57,7 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        return new ArrayList<>(repository.values())
+        return repository.values()
                 .stream()
                 .sorted(Comparator.comparing(User::getName)
                         .thenComparing(User::getEmail))

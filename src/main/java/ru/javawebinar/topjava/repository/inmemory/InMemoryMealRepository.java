@@ -6,10 +6,7 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -68,7 +65,7 @@ public class InMemoryMealRepository implements MealRepository {
         log.info("getAll meal from user {}", userId);
         Map<Integer, Meal> repository = generalRepository.get(userId);
         if (repository == null) {
-            return null;
+            repository = new HashMap<>();
         }
         return repository.values()
                 .stream()
